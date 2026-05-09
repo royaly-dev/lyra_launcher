@@ -19,7 +19,11 @@ export default function SideBar() {
         }}
         className={
           "bg-[rgb(39,41,46)] z-10 h-72 absolute left-7 top-1/2 -translate-y-1/2 w-18.5 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid border " +
-          (isOpen ? "animate-sidebar" : "animate-sidebar-reverse")
+          (startAnimationMilis != 0
+            ? isOpen
+              ? "animate-sidebar"
+              : "animate-sidebar-reverse"
+            : "")
         }
       ></div>
       <div className="bg-[#16181c] z-20 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid border w-fit p-1 absolute left-7 top-1/2 -translate-y-1/2 h-72 flex justify-around items-center flex-col">
