@@ -1,13 +1,29 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Minecraft"; /*a name to be used later*/
+  font-family: "Minecraft reg"; /*a name to be used later*/
   src: url("./font/Minecraftia-Regular.ttf"); /*URL to font*/
+}
+
+@font-face {
+  font-family: "Minecraft";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local("Minecraft"),
+    url("./font/MinecraftTen-VGORe.woff") format("woff");
 }
 
 @theme {
   --animate-sidebar: sidebaropen 2s ease-in-out forwards;
   --animate-sidebar-reverse: sidebaropen 2s ease-in-out reverse forwards;
+
+  --animate-buttonslide: buttonslide 2s ease-in-out forwards;
+  --animate-buttonslide-reverse: buttonslide 2s ease-in-out reverse forwards;
+
+  --animate-logoslide: logoslide 2s ease-in-out forwards;
+  --animate-logoslide-reverse: logoslide 2s ease-in-out reverse forwards;
+
   @keyframes sidebaropen {
     0% {
       height: 288px;
@@ -24,6 +40,78 @@
       translate: -8px -50%;
     }
   }
+
+  @keyframes buttonslide {
+    0% {
+      translate: -50% 0px;
+    }
+    25% {
+      translate: -50% 128px;
+    }
+    100% {
+      translate: -50% 128px;
+    }
+  }
+
+  @keyframes logoslide {
+    0% {
+      translate: 50% 0px;
+    }
+    25% {
+      translate: 50% -192px;
+    }
+    100% {
+      translate: 50% -192px;
+    }
+  }
+}
+
+.minecraft-button {
+  font-family: "Minecraft", sans-serif;
+  font-size: 2.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+  text-decoration: none;
+  text-align: center;
+  text-shadow: var(--dark-green) 0 0.1em 0;
+  color: var(--text-color);
+  background-color: var(--primary-green);
+  position: relative;
+
+  width: 7em;
+  height: 1.6em;
+  border-radius: 0.1rem;
+}
+
+.minecraft-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -0.175em;
+  width: 105%;
+  height: 100%;
+  background-color: var(--medium-dark-green);
+  z-index: -1;
+  border: 0.07em solid var(--border-color);
+}
+
+.minecraft-button::after {
+  content: "";
+  position: absolute;
+  top: -0.175em;
+  left: 0;
+  width: 100%;
+  height: 125%;
+  background-image: linear-gradient(var(--light-green) 50%, var(--dark-green));
+  z-index: -1;
+  border: 0.07em solid var(--border-color);
+}
+
+.minecraft-button:hover {
+  background-color: var(--primary-hover);
 }
 
 :root {
@@ -60,6 +148,15 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --bg-color: rgb(30, 30, 30);
+  --border-color: rgb(40, 18, 18);
+  --primary-green: rgb(0, 140, 69);
+  --light-green: rgb(39, 206, 64);
+  --medium-dark-green: rgb(12 110 61);
+  --dark-green: rgb(6, 77, 42);
+  --text-color: white;
+  --primary-hover: rgb(10, 152, 80);
 }
 
 .dark {
@@ -95,6 +192,15 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  --bg-color: rgb(30, 30, 30);
+  --border-color: rgb(40, 18, 18);
+  --primary-green: rgb(0, 140, 69);
+  --light-green: rgb(39, 206, 64);
+  --medium-dark-green: rgb(12 110 61);
+  --dark-green: rgb(6, 77, 42);
+  --text-color: white;
+  --primary-hover: rgb(10, 152, 80);
 }
 
 @theme inline {
