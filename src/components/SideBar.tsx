@@ -6,6 +6,9 @@ export default function SideBar() {
   const [currentSection, setCurrentSection] = useState<
     "home" | "character" | "settings"
   >("home");
+  const [lastCurrentSection, setLastCurrentSection] = useState<
+    "home" | "character" | "settings"
+  >("home");
   const [startAnimationMilis, setStartAnimationMilis] = useState<number>(0);
   const [currentAnimationDelay, setCurrentAnimationDelay] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -19,27 +22,11 @@ export default function SideBar() {
 
   return (
     <div className="overflow-hidden relative">
-      <div
-        key={isOpen ? "open" : "closed"}
-        style={{
-          animationDelay:
-            currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
-        }}
-        className={
-          "bg-[rgb(39,41,46)] transition-all duration-500 z-10 h-72 absolute left-7 top-1/2 -translate-y-1/2 w-18.5 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid border " +
-          (startAnimationMilis != 0
-            ? isOpen
-              ? "animate-sidebar "
-              : "animate-sidebar-reverse "
-            : "") +
-          (isPlaying ? "-translate-x-56!" : "") +
-          (isLoading ? "-translate-x-56!" : "")
-        }
-      ></div>
       <iframe
         src="https://jungle.mystrator.com/s/demo/#overworld:175:51:36:160:0:0:0:1:flat"
         className="w-screen h-screen scale-[1.15] pointer-events-none select-none"
       />
+
       <img
         src="https://upload.royaly.dev/data/logo.png"
         alt="Lyra The Fallout"
@@ -59,6 +46,7 @@ export default function SideBar() {
             currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
         }}
       />
+
       <div
         className={
           "absolute bottom-9 left-1/2 z-30 -translate-x-1/2 transition-all duration-500 " +
@@ -90,6 +78,65 @@ export default function SideBar() {
           Play
         </a>
       </div>
+
+      <div
+        key={isOpen ? "open" : "closed"}
+        style={{
+          animationDelay:
+            currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
+        }}
+        className={
+          "bg-[rgb(39,41,46)] flex justify-end items-center transition-all duration-500 z-10 h-72 absolute left-7 top-1/2 -translate-y-1/2 w-18.5 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid overflow-hidden border " +
+          (startAnimationMilis != 0
+            ? isOpen
+              ? "animate-sidebar "
+              : "animate-sidebar-reverse "
+            : "") +
+          (isPlaying ? "-translate-x-56!" : "") +
+          (isLoading ? "-translate-x-56!" : "")
+        }
+      >
+        <div
+          className={
+            "absolute bg-red-700 w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
+            (currentSection === "character"
+              ? " z-10 opacity-100"
+              : " z-0 opacity-0") +
+            (currentSection === "home"
+              ? (lastCurrentSection === "character" ? " z-10!" : " z-0!") +
+                " opacity-100!"
+              : "")
+          }
+        >
+          <h1 className="w-246 min-w-246 text-center justify-self-start">
+            Personage
+          </h1>
+          <div className="w-246 min-w-246 bg-amber-500 h-full justify-self-start">
+            <p className="text-3xl">
+              testtesttesttesttesttesttesttesttesttesttesttesttest
+            </p>
+          </div>
+        </div>
+        <div
+          className={
+            "absolute bg-red-700 w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
+            (currentSection === "settings"
+              ? " z-10 opacity-100"
+              : " z-0 opacity-0") +
+            (currentSection === "home"
+              ? (lastCurrentSection === "settings" ? " z-10!" : " z-0!") +
+                " opacity-100!"
+              : "")
+          }
+        >
+          <h1 className="w-246 min-w-246 text-center justify-self-start">
+            Paramètre
+          </h1>
+          <div className="w-246 min-w-246 bg-amber-500 h-full justify-self-start">
+            <p className="text-3xl">fsdqfqsfsdfqfsdfdfsdfsdqfdsfs</p>
+          </div>
+        </div>
+      </div>
       <div
         className={
           "bg-[#16181c] transition-all duration-500 z-20 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid border w-fit p-1 absolute left-7 top-1/2 -translate-y-1/2 h-72 flex justify-around items-center flex-col " +
@@ -101,6 +148,7 @@ export default function SideBar() {
           size={32}
           className="p-4 box-content rounded-full text-[rgb(160,170,182)] transition-all duration-75 cursor-pointer hover:bg-[rgb(52,54,60)] hover:text-[rgb(242,246,250)] active:scale-95"
           onClick={() => {
+            setLastCurrentSection(currentSection);
             setCurrentSection("home");
             if (isOpen) {
               if (startAnimationMilis > 0) {
@@ -122,6 +170,7 @@ export default function SideBar() {
           size={32}
           className="p-4 box-content rounded-full text-[rgb(160,170,182)] transition-all duration-75 cursor-pointer hover:bg-[rgb(52,54,60)] hover:text-[rgb(242,246,250)] active:scale-95"
           onClick={() => {
+            setLastCurrentSection(currentSection);
             setCurrentSection("character");
             if (!isOpen) {
               if (startAnimationMilis > 0) {
@@ -145,6 +194,7 @@ export default function SideBar() {
           size={32}
           className="p-4 box-content rounded-full text-[rgb(160,170,182)] transition-all duration-75 cursor-pointer hover:bg-[rgb(52,54,60)] hover:text-[rgb(242,246,250)] active:scale-95"
           onClick={() => {
+            setLastCurrentSection(currentSection);
             setCurrentSection("settings");
             if (!isOpen) {
               if (startAnimationMilis > 0) {
