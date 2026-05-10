@@ -1,5 +1,5 @@
 import { Home, PersonStanding, Settings } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +9,13 @@ export default function SideBar() {
   const [startAnimationMilis, setStartAnimationMilis] = useState<number>(0);
   const [currentAnimationDelay, setCurrentAnimationDelay] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
   return (
     <div className="overflow-hidden relative">
@@ -25,7 +32,8 @@ export default function SideBar() {
               ? "animate-sidebar "
               : "animate-sidebar-reverse "
             : "") +
-          (isPlaying ? "-translate-x-56!" : "")
+          (isPlaying ? "-translate-x-56!" : "") +
+          (isLoading ? "-translate-x-56!" : "")
         }
       ></div>
       <iframe
@@ -36,13 +44,14 @@ export default function SideBar() {
         src="https://upload.royaly.dev/data/logo.png"
         alt="Lyra The Fallout"
         className={
-          "w-72 absolute z-50 top-8 right-1/2 translate-x-1/2 " +
+          "w-72 transition-all duration-500 absolute z-50 top-8 right-1/2 translate-x-1/2 " +
           (startAnimationMilis != 0
             ? isOpen
               ? "animate-logoslide "
               : "animate-logoslide-reverse "
             : "") +
-          (isPlaying ? "-translate-y-48! transition-all duration-500 " : "")
+          (isPlaying ? "-translate-y-48! " : "") +
+          (isLoading ? "-translate-y-48!" : "")
         }
         key={isOpen ? "open-logo" : "closed-logo"}
         style={{
@@ -58,7 +67,8 @@ export default function SideBar() {
               ? "animate-buttonslide "
               : "animate-buttonslide-reverse "
             : "") +
-          (isPlaying ? "translate-y-48!" : "")
+          (isPlaying ? "translate-y-48!" : "") +
+          (isLoading ? "translate-y-48!" : "")
         }
         key={isOpen ? "open-button" : "closed-button"}
         style={{
@@ -83,7 +93,8 @@ export default function SideBar() {
       <div
         className={
           "bg-[#16181c] transition-all duration-500 z-20 rounded-[1.25rem] border-[rgb(66,68,74)] border-solid border w-fit p-1 absolute left-7 top-1/2 -translate-y-1/2 h-72 flex justify-around items-center flex-col " +
-          (isPlaying ? "-translate-x-56!" : "")
+          (isPlaying ? "-translate-x-56!" : "") +
+          (isLoading ? "-translate-x-56!" : "")
         }
       >
         <Home
