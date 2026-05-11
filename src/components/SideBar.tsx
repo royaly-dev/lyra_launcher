@@ -1,5 +1,7 @@
-import { Home, PersonStanding, Settings } from "lucide-react";
+import { Home, PersonStanding, Settings, Volume2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
+import PlayButton from "./PlayButton";
+import { MyPlayer } from "./VideoPlayer";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,12 +23,37 @@ export default function SideBar() {
   }, []);
 
   return (
-    <div className="overflow-hidden relative">
-      <iframe
-        src="https://jungle.mystrator.com/s/demo/#overworld:175:51:36:160:0:0:0:1:flat"
-        className="w-screen h-screen scale-[1.15] pointer-events-none select-none"
-      />
-
+    <div className="overflow-hidden relative h-screen w-screen">
+      {isPlaying && (
+        <div className="absolute inset-0 z-0">
+          <MyPlayer src="https://upload.royaly.dev/data/lyra_teaser_v2.mp4" />
+          <div className="absolute w-full bottom-0 h-28 backdrop-blur-md flex justify-between items-center flex-row border-t border-white/10">
+            <div className="ml-4 flex-1">
+              <PlayButton
+                label="Retour"
+                onClick={() => {
+                  setIsPlaying(false);
+                }}
+              />
+            </div>
+            <div className="flex justify-center items-center flex-col flex-1">
+              <p className="font-[Minecraft] text-2xl text-white">
+                Telechargement du jeux...
+              </p>
+              <p className="font-[Minecraft] text-lg text-white">
+                Telechargement de java : 15 %
+              </p>
+            </div>
+            <p className="flex-1"></p>
+          </div>
+        </div>
+      )}
+      {!isPlaying && (
+        <iframe
+          src="https://jungle.mystrator.com/s/demo/#overworld:175:51:36:160:0:0:0:1:flat"
+          className="absolute inset-0 z-10 w-screen h-screen scale-[1.15] pointer-events-none select-none"
+        />
+      )}
       <img
         src="https://upload.royaly.dev/data/logo.png"
         alt="Lyra The Fallout"
@@ -46,7 +73,6 @@ export default function SideBar() {
             currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
         }}
       />
-
       <div
         className={
           "absolute bottom-9 left-1/2 z-30 -translate-x-1/2 transition-all duration-500 " +
@@ -78,7 +104,6 @@ export default function SideBar() {
           Play
         </a>
       </div>
-
       <div
         key={isOpen ? "open" : "closed"}
         style={{
