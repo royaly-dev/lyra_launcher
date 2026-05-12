@@ -3,16 +3,6 @@ import { app, BrowserWindow, session } from "electron";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
-app.commandLine.appendSwitch("use-gl", "swiftshader");
-app.commandLine.appendSwitch("ignore-gpu-blocklist");
-app.commandLine.appendSwitch(
-  "disable-features",
-  "VideoOverlayOnFullscreenAllowed",
-);
-
-app.commandLine.appendSwitch("use-angle", "swiftshader"); // force ANGLE à utiliser SwiftShader
-app.commandLine.appendSwitch("disable-gpu-driver-bug-workarounds");
-
 if (require("electron-squirrel-startup")) {
   app.quit();
 }

@@ -157,6 +157,31 @@
   --dark-green: rgb(6, 77, 42);
   --text-color: white;
   --primary-hover: rgb(10, 152, 80);
+
+  /* Modrinth palette (source: modrinth/code packages/assets/styles/variables.scss, dark theme) */
+  --modringht-brand: #1bd96a;
+  --modringht-brand-hover: #2ce578;
+  --modringht-brand-strong: #0faa4f;
+  --modringht-brand-highlight: rgba(27, 217, 106, 0.25);
+  --modringht-brand-shadow: rgba(27, 217, 106, 0.7);
+
+  --modringht-bg: #16181c;
+  --modringht-bg-raised: #27292e;
+  --modringht-bg-super-raised: #34363c;
+  --modringht-divider: #34363c;
+  --modringht-border: rgba(193, 190, 209, 0.12);
+  --modringht-border-strong: #646c75;
+  --modringht-border-soft: #42444a;
+
+  --modringht-text-primary: #ffffff;
+  --modringht-text-default: #b0bac5;
+  --modringht-text-muted: #96a2b0;
+
+  --modringht-blue: #4f9cff;
+  --modringht-orange: #ffa347;
+  --modringht-red: #ff496e;
+  --modringht-purple: #c78aff;
+  --modringht-gray: #9fa4b3;
 }
 
 .dark {

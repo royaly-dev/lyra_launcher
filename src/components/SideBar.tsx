@@ -2,6 +2,7 @@ import { Home, PersonStanding, Settings, Volume2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 import PlayButton from "./PlayButton";
 import { MyPlayer } from "./VideoPlayer";
+import Settings_section from "./Settings";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -158,7 +159,7 @@ export default function SideBar() {
             Paramètre
           </h1>
           <div className="w-246 min-w-246 bg-amber-500 h-full justify-self-start">
-            <p className="text-3xl">fsdqfqsfsdfqfsdfdfsdfsdqfdsfs</p>
+            <Settings_section />
           </div>
         </div>
       </div>
@@ -232,6 +233,8 @@ export default function SideBar() {
                   setCurrentAnimationDelay(0);
                   setStartAnimationMilis(Date.now());
                 }
+              } else {
+                setStartAnimationMilis(Date.now());
               }
               setIsOpen(true);
             }
