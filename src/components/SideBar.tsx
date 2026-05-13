@@ -1,16 +1,12 @@
-import {
-  ArrowLeft,
-  Home,
-  PersonStanding,
-  Settings,
-  Volume2Icon,
-} from "lucide-react";
+import { ArrowLeft, Home, PersonStanding, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import Button from "./Button";
+import CharacterPreview from "./CharacterPreview";
 import { MyPlayer } from "./VideoPlayer";
 import Settings_section from "./Settings";
 
 export default function SideBar() {
+  const previewUsername = "royaly_games";
   const [isOpen, setIsOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState<
     "home" | "character" | "settings"
@@ -22,6 +18,13 @@ export default function SideBar() {
   const [currentAnimationDelay, setCurrentAnimationDelay] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isReturningHome = currentSection === "home";
+  const showCharacterPanel =
+    currentSection === "character" ||
+    (isReturningHome && lastCurrentSection === "character");
+  const showSettingsPanel =
+    currentSection === "settings" ||
+    (isReturningHome && lastCurrentSection === "settings");
 
   useEffect(() => {
     setTimeout(() => {
@@ -131,35 +134,31 @@ export default function SideBar() {
       >
         <div
           className={
-            "absolute bg-red-700 w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
-            (currentSection === "character"
+            "absolute w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
+            (showCharacterPanel
               ? " z-10 opacity-100"
-              : " z-0 opacity-0") +
-            (currentSection === "home"
-              ? (lastCurrentSection === "character" ? " z-10!" : " z-0!") +
-                " opacity-100!"
-              : "")
+              : " z-0 opacity-0")
           }
         >
-          <h1 className="w-246 min-w-246 text-center justify-self-start">
-            Personage
+          <h1 className="w-246 min-w-246 text-center justify-self-start font-[Minecraft] text-4xl py-4 text-white">
+            Personnage
           </h1>
-          <div className="w-246 min-w-246 bg-amber-500 h-full justify-self-start">
-            <p className="text-3xl">
-              testtesttesttesttesttesttesttesttesttesttesttesttest
-            </p>
+          <div className="w-246 min-w-246 h-full justify-self-start px-8 pb-6">
+            <CharacterPreview
+              className="rounded-xl overflow-hidden"
+              minecraftUsername={previewUsername}
+              textureSrc={`https://minotar.net/skin/${previewUsername}`}
+              nametag={previewUsername}
+              variant="CLASSIC"
+            />
           </div>
         </div>
         <div
           className={
             "absolute w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
-            (currentSection === "settings"
+            (showSettingsPanel
               ? " z-10 opacity-100"
-              : " z-0 opacity-0") +
-            (currentSection === "home"
-              ? (lastCurrentSection === "settings" ? " z-10!" : " z-0!") +
-                " opacity-100!"
-              : "")
+              : " z-0 opacity-0")
           }
         >
           <h1 className="w-246 min-w-246 text-center justify-self-start font-[Minecraft] text-4xl py-4 text-white">

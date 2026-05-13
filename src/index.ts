@@ -27,6 +27,8 @@ app.on("ready", () => {
     callback({
       responseHeaders: {
         ...detail.responseHeaders,
+        "Access-Control-Allow-Origin": ["*"],
+        "Access-Control-Allow-Methods": ["GET, OPTIONS"],
         "Content-Security-Policy": ["frame-src 'self' https:;"],
       },
     });
