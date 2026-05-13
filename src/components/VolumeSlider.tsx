@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type VolumeSliderProps = {
   value?: number;
@@ -29,6 +29,13 @@ export default function VolumeSlider({
 }: VolumeSliderProps) {
   const [currentValue, setCurrentValue] = useState(Math.max(min, value));
   const range = Math.max(1, max - min);
+  const normalizedSnapPoints = useMemo(
+    () =>
+      Array.from(new Set(snapPoints.map((point) => Math.max(min, Math.min(point, max))))).sort(
+        (left, right) => left - right
+      ),
+    [max, min, snapPoints]
+  );
 
   useEffect(() => {
     setCurrentValue(Math.max(min, value));
@@ -50,7 +57,7 @@ export default function VolumeSlider({
       parsedValue = min;
     }
 
-    for (const snapPoint of snapPoints) {
+    for (const snapPoint of normalizedSnapPoints) {
       const distance = Math.abs(snapPoint - parsedValue);
       if (distance < snapRange) {
         parsedValue = snapPoint;
@@ -75,7 +82,14 @@ export default function VolumeSlider({
       style={{ display: "flex", alignItems: "center", width: "100%" }}
     >
       <div style={{ width: "100%", position: "relative" }}>
-        <div style={{ position: "relative", height: "1.2rem", display: "flex", alignItems: "center" }}>
+        <div
+          style={{
+            position: "relative",
+            height: "1.2rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <div
             style={{
               position: "absolute",
@@ -91,7 +105,7 @@ export default function VolumeSlider({
                 left: "calc(0.95rem / 2)",
               }}
             >
-              {snapPoints.map((snapPoint) => (
+              {normalizedSnapPoints.map((snapPoint) => (
                 <div
                   key={snapPoint}
                   style={{
@@ -103,7 +117,8 @@ export default function VolumeSlider({
                     opacity: disabled ? 0 : 1,
                     left: `${((snapPoint - min) / range) * 100}%`,
                     top: "50%",
-                    backgroundColor: snapPoint <= currentValue ? "#1bd96a" : "#5f6b7c",
+                    backgroundColor:
+                      snapPoint <= currentValue ? "#1bd96a" : "#5f6b7c",
                   }}
                 />
               ))}
@@ -117,7 +132,9 @@ export default function VolumeSlider({
             step={step}
             disabled={disabled}
             value={currentValue}
-            onInput={(event) => onInputWithSnap((event.target as HTMLInputElement).value)}
+            onInput={(event) =>
+              onInputWithSnap((event.target as HTMLInputElement).value)
+            }
             className="lyra-modrinth-slider"
             style={
               {
@@ -169,6 +186,8 @@ export default function VolumeSlider({
           outline: "none",
         }}
       />
+
+      <span className="text-(--modringht-text-default) pl-2">{unit}</span>
 
       <style>
         {`

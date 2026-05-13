@@ -1,6 +1,12 @@
-import { Home, PersonStanding, Settings, Volume2Icon } from "lucide-react";
+import {
+  ArrowLeft,
+  Home,
+  PersonStanding,
+  Settings,
+  Volume2Icon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import PlayButton from "./PlayButton";
+import Button from "./Button";
 import { MyPlayer } from "./VideoPlayer";
 import Settings_section from "./Settings";
 
@@ -30,11 +36,12 @@ export default function SideBar() {
           <MyPlayer src="https://upload.royaly.dev/data/lyra_teaser_v2.mp4" />
           <div className="absolute w-full bottom-0 h-28 backdrop-blur-md flex justify-between items-center flex-row border-t border-white/10">
             <div className="ml-4 flex-1">
-              <PlayButton
+              <Button
                 label="Retour"
                 onClick={() => {
                   setIsPlaying(false);
                 }}
+                icon={<ArrowLeft size={18} />}
               />
             </div>
             <div className="flex justify-center items-center flex-col flex-1">
@@ -145,7 +152,7 @@ export default function SideBar() {
         </div>
         <div
           className={
-            "absolute bg-red-700 w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
+            "absolute w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
             (currentSection === "settings"
               ? " z-10 opacity-100"
               : " z-0 opacity-0") +
@@ -155,10 +162,10 @@ export default function SideBar() {
               : "")
           }
         >
-          <h1 className="w-246 min-w-246 text-center justify-self-start">
-            Paramètre
+          <h1 className="w-246 min-w-246 text-center justify-self-start font-[Minecraft] text-4xl py-4 text-white">
+            Parametre
           </h1>
-          <div className="w-246 min-w-246 bg-amber-500 h-full justify-self-start">
+          <div className="w-246 min-w-246 h-full justify-self-start flex justify-center items-start">
             <Settings_section />
           </div>
         </div>

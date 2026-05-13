@@ -1,5 +1,4 @@
-import { ArrowLeft } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ReactElement, useMemo, useState } from "react";
 
 type PlayButtonProps = {
   label?: string;
@@ -7,14 +6,16 @@ type PlayButtonProps = {
   loading?: boolean;
   onClick?: () => void;
   className?: string;
+  icon?: ReactElement;
 };
 
-export default function PlayButton({
+export default function Button({
   label = "Play",
   disabled = false,
   loading = false,
   onClick,
   className,
+  icon,
 }: PlayButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -107,9 +108,10 @@ export default function PlayButton({
             animation: "lyra-play-spin 0.7s linear infinite",
           }}
         />
-      ) : (
-        <ArrowLeft size={18} />
-      )}
+      ) : icon ? (
+        icon
+      ) : null
+      }
       <span>{label}</span>
       <style>
         {`@keyframes lyra-play-spin {

@@ -14,6 +14,14 @@
     url("./font/MinecraftTen-VGORe.woff") format("woff");
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 @theme {
   --animate-sidebar: sidebaropen 2s ease-in-out forwards;
   --animate-sidebar-reverse: sidebaropen 2s ease-in-out reverse forwards;
