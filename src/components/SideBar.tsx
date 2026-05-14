@@ -4,9 +4,12 @@ import Button from "./Button";
 import CharacterPreview from "./CharacterPreview";
 import { MyPlayer } from "./VideoPlayer";
 import Settings_section from "./Settings";
+import Input from "./Input";
+import PlayerType from "./PlayerTypeSelector";
 
 export default function SideBar() {
   const previewUsername = "royaly_games";
+  const previewSkinSrc = `https://mc-heads.net/skin/${previewUsername}`;
   const [isOpen, setIsOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState<
     "home" | "character" | "settings"
@@ -135,30 +138,77 @@ export default function SideBar() {
         <div
           className={
             "absolute w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
-            (showCharacterPanel
-              ? " z-10 opacity-100"
-              : " z-0 opacity-0")
+            (showCharacterPanel ? " z-10 opacity-100" : " z-0 opacity-0")
           }
         >
           <h1 className="w-246 min-w-246 text-center justify-self-start font-[Minecraft] text-4xl py-4 text-white">
             Personnage
           </h1>
-          <div className="w-246 min-w-246 h-full justify-self-start px-8 pb-6">
+          <div className="w-246 min-w-246 h-full justify-self-start px-8 pb-6 flex justify-around items-center flex-row">
             <CharacterPreview
-              className="rounded-xl overflow-hidden"
+              className="rounded-xl overflow-hidden flex-1"
               minecraftUsername={previewUsername}
-              textureSrc={`https://minotar.net/skin/${previewUsername}`}
+              textureSrc={previewSkinSrc}
               nametag={previewUsername}
               variant="CLASSIC"
             />
+            <div className="flex justify-center items-center flex-col h-full gap-4 w-[75%] flex-1">
+              <div className="flex flex-col gap-2 self-start w-full">
+                <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
+                  username :
+                </span>
+                <Input
+                  OnChnage={() => {
+                    console.log("");
+                  }}
+                  placeholder={"test"}
+                  type={"text"}
+                  value={"royaly_games"}
+                />
+              </div>
+              <div className="flex justify-between items-center gap-6">
+                <div className="flex justify-center items-start flex-col">
+                  <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
+                    jobs :
+                  </span>
+                  <Input
+                    OnChnage={() => {
+                      console.log("");
+                    }}
+                    placeholder={"test"}
+                    type={"text"}
+                    value={"Electricien"}
+                  />
+                </div>
+                <div className="flex justify-center items-start flex-col">
+                  <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
+                    Type :
+                  </span>
+                  <PlayerType selected={1} />
+                </div>
+              </div>
+              <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
+                texture :
+              </span>
+              <div className="rounded-md cursor-pointer border border-dashed border-(--modringht-border-strong) bg-(--modringht-bg-super-raised) p-6 flex justify-center items-center flex-col gap-1 w-full">
+                <img
+                  src={previewSkinSrc}
+                  className="h-16 w-16 rounded-md my-3"
+                />
+                <span className="text-base text-(--modringht-text-default)">
+                  Clicker pour la changer
+                </span>
+                <span className="text-xs text-(--modringht-text-muted)">
+                  PNG (64pxx64px)
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div
           className={
             "absolute w-246 h-full rounded-[1.25rem] flex justify-start items-start flex-col overflow-hidden transition-all duration-1000" +
-            (showSettingsPanel
-              ? " z-10 opacity-100"
-              : " z-0 opacity-0")
+            (showSettingsPanel ? " z-10 opacity-100" : " z-0 opacity-0")
           }
         >
           <h1 className="w-246 min-w-246 text-center justify-self-start font-[Minecraft] text-4xl py-4 text-white">
