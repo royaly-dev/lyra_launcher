@@ -6,6 +6,7 @@ import { MyPlayer } from "./VideoPlayer";
 import Settings_section from "./Settings";
 import Input from "./Input";
 import PlayerType from "./PlayerTypeSelector";
+import InfoModal from "./InfoModal";
 
 export default function SideBar() {
   const previewUsername = "royaly_games";
@@ -37,6 +38,17 @@ export default function SideBar() {
 
   return (
     <div className="overflow-hidden relative h-screen w-screen">
+      <InfoModal
+        content={{
+          title: "Connexion réussie !",
+          desc: "Vous êtes maintenant connecté !",
+        }}
+        type="success"
+        onButtonPressedSend={(type) => {
+          console.log(type);
+        }}
+        open={isPlaying}
+      />
       {isPlaying && (
         <div className="absolute inset-0 z-0">
           <MyPlayer src="https://upload.royaly.dev/data/lyra_teaser_v2.mp4" />
@@ -72,7 +84,7 @@ export default function SideBar() {
         src="https://upload.royaly.dev/data/logo.png"
         alt="Lyra The Fallout"
         className={
-          "w-72 transition-all duration-500 absolute z-50 top-8 right-1/2 translate-x-1/2 " +
+          "w-72 transition-all duration-500 absolute z-40 top-8 right-1/2 translate-x-1/2 " +
           (startAnimationMilis != 0
             ? isOpen
               ? "animate-logoslide "
