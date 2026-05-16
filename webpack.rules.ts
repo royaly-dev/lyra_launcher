@@ -32,4 +32,8 @@ export const rules: Required<ModuleOptions>["rules"] = [
     test: /\.gltf$/,
     type: "asset/source",
   },
+  {
+    test: /\.(png|ico|icns)$/i,
+    type: "asset/resource",
+  },
 ];

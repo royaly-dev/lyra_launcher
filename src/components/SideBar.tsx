@@ -208,7 +208,7 @@ export default function SideBar() {
                   className="h-16 w-16 rounded-md my-3"
                 />
                 <span className="text-base text-(--modringht-text-default)">
-                  Clicker pour la changer
+                  Click pour la changer
                 </span>
                 <span className="text-xs text-(--modringht-text-muted)">
                   PNG (64pxx64px)
