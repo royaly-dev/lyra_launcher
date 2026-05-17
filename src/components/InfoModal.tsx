@@ -9,7 +9,7 @@ export default function InfoModal({
   open,
 }: {
   open: boolean;
-  type: "success" | "Connect_error" | "Game_error";
+  type: "success" | "Connect_error" | "Game_error" | "error";
   content: { title: string; desc: string };
   onButtonPressedSend: (type: "send" | "continue" | "relaunche") => void;
 }) {
@@ -62,7 +62,7 @@ export default function InfoModal({
         <div className="flex justify-between items-center gap-2">
           <Button
             label={
-              type === "success"
+              type === "success" || type === "error"
                 ? "Continuer"
                 : type === "Connect_error"
                   ? "Relancer"

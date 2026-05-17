@@ -1,5 +1,5 @@
 import { ArrowLeft, Home, PersonStanding, Settings } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import CharacterPreview from "./CharacterPreview";
 import { MyPlayer } from "./VideoPlayer";
@@ -22,6 +22,16 @@ export default function SideBar() {
   const [currentAnimationDelay, setCurrentAnimationDelay] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [displayInfoModal, setDisplayInfoModal] = useState<{
+    open: boolean;
+    content: { title: string; desc: string };
+    type: "success" | "Connect_error" | "Game_error";
+  }>({ open: false, content: { desc: "", title: "" }, type: "success" });
+  const [statusText, setStatusText] = useState<{
+    title: string;
+    subTitle: string;
+  }>({ title: "", subTitle: "" });
+
   const isReturningHome = currentSection === "home";
   const showCharacterPanel =
     currentSection === "character" ||
@@ -30,47 +40,107 @@ export default function SideBar() {
     currentSection === "settings" ||
     (isReturningHome && lastCurrentSection === "settings");
 
+  const w = useRef<Window>(null);
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
+    if (!w.current) {
+      w.current = window;
+    }
+    if (w.current) {
+      w.current.lyra.onGameStatus((data) => {
+        switch (data.type) {
+          case "download":
+            setStatusText({
+              title: "Telechargement du jeu...",
+              subTitle:
+                "Telechargement " +
+                (data.element === "Java" ? "de " : "des ") +
+                data.element +
+                " : " +
+                data.status +
+                "%",
+            });
+            break;
+          case "patch":
+            setStatusText({
+              title: "Instalation du jeu...",
+              subTitle: "Instalation du jeu en cour...",
+            });
+            break;
+          case "check":
+            setStatusText({
+              title: "Verification des ressources...",
+              subTitle: "Verification des ressources : " + data.status + "%",
+            });
+            break;
+          case "extract":
+            setStatusText({
+              title: "Extraction du jeu...",
+              subTitle: "Extraction du jeu en cour...",
+            });
+            break;
+          case "start":
+            setStatusText({
+              title: "Demarrage du jeu...",
+              subTitle: "Demarrage du jeu en cour...",
+            });
+        }
+      });
+
+      w.current.lyra.onErrorStatus((data) => {
+        setDisplayInfoModal({
+          open: true,
+          type: data.message,
+          content: {
+            desc:
+              data.message === "Game_error"
+                ? "Voulez vous envoyer l'erreur à l'admin ?"
+                : "Voulez vous relancez le téléchargement",
+            title: "Une erreur est survenue !",
+          },
+        });
+      });
+    }
   }, []);
 
   return (
     <div className="overflow-hidden relative h-screen w-screen">
       <InfoModal
         content={{
-          title: "Connexion réussie !",
-          desc: "Vous êtes maintenant connecté !",
+          title: displayInfoModal.content.title,
+          desc: displayInfoModal.content.desc,
         }}
-        type="success"
+        type={displayInfoModal.type}
         onButtonPressedSend={(type) => {
-          console.log(type);
+          switch (type) {
+            case "continue":
+              setDisplayInfoModal({ ...displayInfoModal, open: false });
+              break;
+            case "relaunche":
+              w.current.lyra.relaunche_app();
+              break;
+            case "send":
+              w.current.lyra.send_error_log();
+              break;
+          }
         }}
-        open={isPlaying}
+        open={displayInfoModal.open}
       />
       {isPlaying && (
         <div className="absolute inset-0 z-0">
           <MyPlayer src="https://upload.royaly.dev/data/lyra_teaser_v2.mp4" />
-          <div className="absolute w-full bottom-0 h-28 backdrop-blur-md flex justify-between items-center flex-row border-t border-white/10">
-            <div className="ml-4 flex-1">
-              <Button
-                label="Retour"
-                onClick={() => {
-                  setIsPlaying(false);
-                }}
-                icon={<ArrowLeft size={18} />}
-              />
-            </div>
-            <div className="flex justify-center items-center flex-col flex-1">
+          <div className="absolute w-full bottom-0 h-28 backdrop-blur-md flex justify-center items-center flex-row border-t border-white/10">
+            <div className="flex justify-center items-center flex-col">
               <p className="font-[Minecraft] text-2xl text-white">
-                Telechargement du jeux...
+                {statusText.title}
               </p>
               <p className="font-[Minecraft] text-lg text-white">
-                Telechargement de java : 15 %
+                {statusText.subTitle}
               </p>
             </div>
-            <p className="flex-1"></p>
           </div>
         </div>
       )}
@@ -114,6 +184,11 @@ export default function SideBar() {
         style={{
           animationDelay:
             currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
+        }}
+        onClick={() => {
+          if (w) {
+            w.current.lyra.startGame();
+          }
         }}
       >
         <a

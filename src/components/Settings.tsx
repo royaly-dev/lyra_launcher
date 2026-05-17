@@ -1,14 +1,34 @@
-import { useState } from "react";
+import { StorageType } from "@/types/Storage.types";
+import { useEffect, useRef, useState } from "react";
 import AccountDisplay from "./AccountDisplay";
 import ModringhtToggle from "./ModringhtToggle";
 import RadioSelector from "./RadioSelector";
 import VolumeSlider from "./VolumeSlider";
 
 export default function Settings_section() {
-  const [volume, setVolume] = useState<number>(0);
-  const [modEnabled, setModEnabled] = useState<boolean>(true);
-  const [resolution, setResolution] = useState<string>("1920x1080");
-  const [filePerSecond, setFilePerSecond] = useState<number>(5);
+  const w = useRef<Window>(null);
+  const [settings, setSettings] = useState<StorageType["settings"]>(null);
+
+  useEffect(() => {
+    if (!w.current) {
+      w.current = window;
+    }
+    getAllSettings();
+  }, []);
+
+  useEffect(() => {
+    saveSettings();
+  }, [settings]);
+
+  const getAllSettings = async () => {
+    if (!w.current) return;
+    setSettings(await w.current.lyra.getSettings());
+  };
+
+  const saveSettings = async () => {
+    if (!w.current || !settings) return;
+    w.current.lyra.setSettings(settings);
+  };
 
   const resolutionOptions = [
     {
@@ -35,7 +55,7 @@ export default function Settings_section() {
       style={{ scrollbarWidth: "none" }}
     >
       <AccountDisplay
-        name="test player"
+        name="cat boy"
         url="https://upload.royaly.dev/data/cat.jpg"
         mainClassName="pb-4"
       />
@@ -44,9 +64,12 @@ export default function Settings_section() {
         <span className="text-base">
           Démarrer le launcher au démarrage de l'ordinateur:
         </span>
-        <ModringhtToggle checked={modEnabled} onChange={setModEnabled} />
+        <ModringhtToggle
+          checked={settings?.startup !== null ? settings?.startup : true}
+          onChange={(checked) => setSettings({ ...settings, startup: checked })}
+        />
         <span style={{ color: "var(--modringht-text-muted)" }}>
-          {modEnabled ? "Activé" : "Désactivé"}
+          {settings?.startup ? "Activé" : "Désactivé"}
         </span>
       </div>
 
@@ -57,11 +80,16 @@ export default function Settings_section() {
         <input
           className="w-12 h-9 px-2.5 text-base outline-none color-[#e9edf4] bg-[#20252e] border border-solid border-[#4d596b] rounded-lg"
           type="number"
-          value={filePerSecond}
+          value={settings?.downloadFiles || 0}
           min={1}
           max={10}
           step={1}
-          onChange={(event) => setFilePerSecond(Number(event.target.value))}
+          onChange={(event) =>
+            setSettings({
+              ...settings,
+              downloadFiles: Number(event.target.value),
+            })
+          }
         />
         <span className="text-(--modringht-text-muted)">Fichier / seconde</span>
       </div>
@@ -73,8 +101,10 @@ export default function Settings_section() {
         <RadioSelector
           name="resolution"
           options={resolutionOptions}
-          value={resolution}
-          onChange={setResolution}
+          value={settings?.monitorResolutions || ""}
+          onChange={(value) =>
+            setSettings({ ...settings, monitorResolutions: value })
+          }
         />
       </div>
 
@@ -88,8 +118,8 @@ export default function Settings_section() {
         </p>
 
         <VolumeSlider
-          value={volume}
-          onChange={setVolume}
+          value={settings?.ram || 512}
+          onChange={(value) => setSettings({ ...settings, ram: value })}
           min={512}
           max={16384}
           step={1}
