@@ -1,7 +1,7 @@
 import { StorageType } from "./Storage.types";
 
 export type GameStatusData = {
-  type: "download" | "check" | "patch" | "extract" | "start";
+  type: "download" | "check" | "patch" | "extract" | "start" | "start_end";
   element: string;
   status: string;
 };

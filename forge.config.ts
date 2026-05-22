@@ -14,13 +14,25 @@ import { rendererConfig } from "./webpack.renderer.config";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    protocols: [
+      {
+        name: "Lyra",
+        schemes: ["lyra"],
+      },
+    ],
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({}),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerDeb({
+      options: {
+        mimeType: ["x-scheme-handler/lyra"],
+        categories: ["Game"],
+        desktopTemplate: undefined,
+      },
+    }),
   ],
   plugins: [
     new AutoUnpackNativesPlugin({}),

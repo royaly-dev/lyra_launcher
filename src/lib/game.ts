@@ -38,7 +38,7 @@ export async function StartGame() {
   const game = new Launch();
 
   game.Launch({
-    url: "https://launcher.royaly.dev/files/?instance=lyra",
+    url: "http://localhost:3001/api/file",
     authenticator: auth,
     path: appdata + ".lyra",
     instance: "lyra",
@@ -119,13 +119,30 @@ export async function StartGame() {
     });
   });
 
-  game.on("data", (e) => {
+  game.on("data", (e: string) => {
     console.log(e);
-    ipcMain.emit("onGameStatus", null, {
-      type: "start",
-      element: "",
-      status: "",
-    });
+    if (e.includes("#@!@# Game crashed! Crash report saved to: #@!@#")) {
+      const crachFilePath = e.slice(49, e.length - 1);
+      ipcMain.emit("openWindow");
+      setTimeout(() => {
+        ipcMain.emit("onErrorStatus", null, {
+          message: "Game_error",
+          errorFile: crachFilePath,
+        });
+      }, 500);
+    } else if (e.includes("LyraClientInitFinsh")) {
+      ipcMain.emit("onGameStatus", null, {
+        type: "start_end",
+        element: "",
+        status: "",
+      });
+    } else {
+      ipcMain.emit("onGameStatus", null, {
+        type: "start",
+        element: "",
+        status: "",
+      });
+    }
   });
 
   game.on("close", (code) => {
@@ -134,8 +151,6 @@ export async function StartGame() {
   });
 
   game.on("error", (error) => {
-    console.log(error);
-    ipcMain.emit("openWindow");
-    ipcMain.emit("onErrorStatus", null, { message: "Game_error" });
+    console.log("error : " + error);
   });
 }

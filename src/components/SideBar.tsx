@@ -1,4 +1,10 @@
-import { ArrowLeft, Home, PersonStanding, Settings } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpLeftFromCircleIcon,
+  Home,
+  PersonStanding,
+  Settings,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import CharacterPreview from "./CharacterPreview";
@@ -87,6 +93,10 @@ export default function SideBar() {
               title: "Demarrage du jeu...",
               subTitle: "Demarrage du jeu en cour...",
             });
+            break;
+          case "start_end":
+            w.current.close();
+            break;
         }
       });
 

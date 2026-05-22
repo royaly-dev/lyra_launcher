@@ -3,6 +3,7 @@ import Store from "electron-store";
 import path from "node:path";
 import { StartGame } from "./lib/game";
 import { getStorage } from "./lib/storage";
+import fs from "fs/promises";
 
 import { StorageType } from "./types/Storage.types";
 
@@ -14,6 +15,7 @@ if (require("electron-squirrel-startup")) {
 }
 
 const store: Store<StorageType> = getStorage();
+let tempCrachPath: string;
 
 import trayIconIcns from "./img/icon.icns";
 import trayIconIco from "./img/icon.ico";
@@ -33,15 +35,27 @@ if (!getLock) {
   process.exit(0);
 }
 
-app.on("second-instance", () => {
+app.on("second-instance", (event, commandLine) => {
   if (mainWindow) {
     if (mainWindow.isDestroyed()) createWindow();
   }
+
+  ipcMain.emit("deekLinkCall", null, commandLine.toString().split("//")[1]);
 });
 
 let isQuitting = false;
 
 let mainWindow: BrowserWindow;
+
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient("lyra", process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient("lyra");
+}
 
 const createWindow = (): void => {
   mainWindow = new BrowserWindow({
@@ -68,7 +82,13 @@ const createWindow = (): void => {
     (
       event,
       data: {
-        type: "download" | "check" | "patch" | "extract";
+        type:
+          | "download"
+          | "check"
+          | "patch"
+          | "extract"
+          | "start"
+          | "start_end";
         message: string;
       },
     ) => {
@@ -77,9 +97,17 @@ const createWindow = (): void => {
     },
   );
 
-  ipcMain.on("onErrorStatus", (event, data: { message: string }) => {
-    if (mainWindow.isDestroyed()) return;
-    mainWindow.webContents.send("onErrorStatus", data);
+  ipcMain.on(
+    "onErrorStatus",
+    (event, data: { message: string; errorFile: string }) => {
+      if (mainWindow.isDestroyed()) return;
+      tempCrachPath = data.errorFile;
+      mainWindow.webContents.send("onErrorStatus", data);
+    },
+  );
+
+  ipcMain.on("deekLinkCall", (event, call: string) => {
+    console.log(call);
   });
 
   mainWindow.on("close", (e) => {
@@ -187,6 +215,15 @@ ipcMain.handle("relaunche_app", async () => {
 });
 
 ipcMain.handle("send_error_log", async () => {
+  if (!tempCrachPath) return;
+
+  const file = await fs.readFile(tempCrachPath);
+
+  await fetch("http://localhost:3001/api/error", {
+    method: "POST",
+    body: file,
+  });
+
   return true;
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "lyra_launcher",
-  "productName": "Lyra Launcher",
+  "productName": "lyra_launcher",
   "version": "1.0.0",
   "description": "Lyra launcher to play lyra",
   "main": ".webpack/main",
@@ -48,6 +48,7 @@
     "@rn-primitives/slot": "^1.4.0",
     "@types/three": "^0.184.1",
     "@types/video.js": "^7.3.58",
+    "better-auth": "^1.6.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "discord-rpc": "^4.0.1",
