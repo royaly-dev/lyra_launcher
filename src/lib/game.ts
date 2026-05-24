@@ -45,7 +45,7 @@ export async function StartGame() {
       height: Number(settings.monitorResolutions.split("x")[1]),
     },
     memory: {
-      min: "4096M",
+      min: "2048M",
       max: settings.ram + "M",
     },
   });

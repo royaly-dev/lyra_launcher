@@ -118,9 +118,9 @@ export default function Settings_section() {
         </p>
 
         <VolumeSlider
-          value={settings?.ram || 512}
+          value={settings?.ram || 2048}
           onChange={(value) => setSettings({ ...settings, ram: value })}
-          min={512}
+          min={2048}
           max={16384}
           step={1}
           snapPoints={[0, 4096, 8192, 16384]}
