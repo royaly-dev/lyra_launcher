@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu, session, Tray } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  session,
+  shell,
+  Tray,
+} from "electron";
 import Store from "electron-store";
 import path from "node:path";
 import { StartGame } from "./lib/game";
@@ -106,8 +114,65 @@ const createWindow = (): void => {
     },
   );
 
-  ipcMain.on("deekLinkCall", (event, call: string) => {
-    console.log(call);
+  ipcMain.on("deekLinkCall", async (event, call: string) => {
+    const parcedCall = call.split("/");
+
+    if (mainWindow.isDestroyed()) createWindow();
+
+    if (parcedCall[0] === "login") {
+      const currentSettings = store.get("settings");
+      const cookie = "better-auth.session_token=" + parcedCall[1];
+
+      try {
+        const accountInfo = await fetch(
+          "http://localhost:3001/api/auth/get-session",
+          {
+            method: "GET",
+            headers: {
+              Cookie: decodeURIComponent(cookie),
+              Origin: "lyra:/",
+            },
+          },
+        );
+        const playerInfo = await fetch("http://localhost:3001/api/player/get", {
+          method: "GET",
+          headers: {
+            Cookie: decodeURIComponent(cookie),
+            Origin: "lyra:/",
+          },
+        });
+
+        const parsedAccountInfo = await accountInfo.json();
+
+        if (!parsedAccountInfo) {
+          ipcMain.emit("onErrorStatus", null, { message: "error" });
+          return;
+        }
+
+        const parsedPlayerInfo = await playerInfo.json();
+
+        const newSettings: StorageType["settings"] = {
+          ...currentSettings,
+          account: {
+            name: parsedPlayerInfo.data.name,
+            token: parcedCall[1],
+            uuid: parsedPlayerInfo.data.uuid,
+          },
+        };
+
+        store.set("settings", newSettings);
+
+        if (!mainWindow.isFocused()) mainWindow.focus();
+
+        mainWindow.webContents.send("onRefreshRequest");
+      } catch (e) {
+        ipcMain.emit("onErrorStatus", null, { message: "Connect_error" });
+      }
+    }
+  });
+
+  ipcMain.on("reload", () => {
+    mainWindow.webContents.send("onRefreshRequest");
   });
 
   mainWindow.on("close", (e) => {
@@ -218,13 +283,93 @@ ipcMain.handle("send_error_log", async () => {
   if (!tempCrachPath) return;
 
   const file = await fs.readFile(tempCrachPath);
+  const settings: StorageType["settings"] = store.get("settings");
+  const cookie = "better-auth.session_token=" + settings?.account?.token;
 
   await fetch("http://localhost:3001/api/error", {
     method: "POST",
+    headers: {
+      Cookie: decodeURIComponent(cookie),
+      Origin: "lyra:/",
+    },
     body: file,
   });
 
   return true;
+});
+
+ipcMain.handle("openLink", (event, link: string) => {
+  shell.openExternal(link);
+});
+
+ipcMain.handle("isLoged", async () => {
+  const currentSettings = store.get("settings");
+
+  // TODO : check if the player is not banned and if the current session is still alive
+
+  const settings: StorageType["settings"] = store.get("settings");
+  const cookie = "better-auth.session_token=" + settings?.account?.token;
+
+  const accountInfo = await fetch(
+    "http://localhost:3001/api/auth/get-session",
+    {
+      method: "GET",
+      headers: {
+        Cookie: decodeURIComponent(cookie),
+        Origin: "lyra:/",
+      },
+    },
+  );
+
+  const parsedAccountInfo = await accountInfo.json();
+
+  if (!parsedAccountInfo) return false;
+
+  if (parsedAccountInfo)
+    if (currentSettings?.account?.token) {
+      return true;
+    } else {
+      return false;
+    }
+});
+
+ipcMain.handle("logout", () => {
+  const { account, ...newSettings } = store.get("settings");
+  store.set("settings", newSettings);
+  ipcMain.emit("reload");
+});
+
+ipcMain.handle("getPlayerData", async () => {
+  const settings: StorageType["settings"] = store.get("settings");
+  const cookie = "better-auth.session_token=" + settings?.account?.token;
+
+  const playerData = await fetch("http://localhost:3001/api/player/get", {
+    method: "GET",
+    headers: {
+      Cookie: decodeURIComponent(cookie),
+      Origin: "lyra:/",
+    },
+  });
+
+  const parsedPlayerData: {
+    confirm: boolean;
+    data: {
+      uuid: string;
+      name: string;
+      type: number;
+      skin?: string;
+      job: string;
+    };
+  } = await playerData.json();
+
+  if (!parsedPlayerData.confirm) return { confirm: false };
+
+  store.set("settings", {
+    ...settings,
+    account: { ...settings.account, name: parsedPlayerData.data.name },
+  });
+
+  return parsedPlayerData;
 });
 
 app.on("activate", () => {

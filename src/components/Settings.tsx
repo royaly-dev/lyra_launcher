@@ -55,8 +55,8 @@ export default function Settings_section() {
       style={{ scrollbarWidth: "none" }}
     >
       <AccountDisplay
-        name="cat boy"
-        url="https://upload.royaly.dev/data/cat.jpg"
+        name={settings?.account?.name}
+        url={`https://api.mcheads.org/head/${settings?.account?.name}/256`}
         mainClassName="pb-4"
       />
 

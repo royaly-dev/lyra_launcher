@@ -18,6 +18,18 @@ contextBridge.exposeInMainWorld("lyra", {
   send_error_log: async () => {
     return await ipcRenderer.invoke("send_error_log");
   },
+  openLink: async (link: string) => {
+    return await ipcRenderer.invoke("openLink", link);
+  },
+  isLoged: async () => {
+    return await ipcRenderer.invoke("isLoged");
+  },
+  logout: async () => {
+    return await ipcRenderer.invoke("logout");
+  },
+  getPlayerData: async () => {
+    return await ipcRenderer.invoke("getPlayerData");
+  },
   onGameStatus: (callback: (data: GameStatusData) => void) => {
     ipcRenderer.on("onGameStatus", (event, data: GameStatusData) => {
       callback(data);
@@ -35,5 +47,10 @@ contextBridge.exposeInMainWorld("lyra", {
         callback(data);
       },
     );
+  },
+  onRefreshRequest: (callback: () => void) => {
+    ipcRenderer.on("onRefreshRequest", () => {
+      callback();
+    });
   },
 });

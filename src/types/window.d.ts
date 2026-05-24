@@ -16,8 +16,22 @@ type LyraBridge = {
   startGame: () => Promise<void>;
   relaunche_app: () => Promise<void>;
   send_error_log: () => Promise<void>;
+  openLink: (link: string) => Promise<void>;
+  isLoged: () => Promise<boolean>;
+  logout: () => Promise<void>;
+  getPlayerData: () => Promise<{
+    confirm: boolean;
+    data: {
+      uuid: string;
+      name: string;
+      type: number;
+      skin?: string;
+      job: string;
+    };
+  }>;
   onGameStatus: (callback: (data: GameStatusData) => void) => void;
   onErrorStatus: (callback: (data: ErrorStatusData) => void) => void;
+  onRefreshRequest: (callback: () => void) => void;
 };
 
 declare global {

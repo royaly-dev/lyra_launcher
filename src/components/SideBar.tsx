@@ -13,10 +13,10 @@ import Settings_section from "./Settings";
 import Input from "./Input";
 import PlayerType from "./PlayerTypeSelector";
 import InfoModal from "./InfoModal";
+import { Login } from "./Login";
+import { string } from "three/src/nodes/tsl/TSLCore";
 
 export default function SideBar() {
-  const previewUsername = "royaly_games";
-  const previewSkinSrc = `https://mc-heads.net/skin/${previewUsername}`;
   const [isOpen, setIsOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState<
     "home" | "character" | "settings"
@@ -31,12 +31,24 @@ export default function SideBar() {
   const [displayInfoModal, setDisplayInfoModal] = useState<{
     open: boolean;
     content: { title: string; desc: string };
-    type: "success" | "Connect_error" | "Game_error";
+    type: "success" | "Connect_error" | "Game_error" | "error";
   }>({ open: false, content: { desc: "", title: "" }, type: "success" });
   const [statusText, setStatusText] = useState<{
     title: string;
     subTitle: string;
   }>({ title: "", subTitle: "" });
+  const [isLoged, setIsLoged] = useState<boolean>(false);
+  const [skin, setSkin] = useState<{
+    uuid: string;
+    name: string;
+    type: number;
+    skin?: string;
+    job: string;
+  }>({ uuid: "default", name: "", job: "", type: 0 });
+  const [maintenanceStatus, setMaintenanceStatus] = useState<{
+    maintenance: boolean;
+    maintenance_message: string;
+  }>();
 
   const isReturningHome = currentSection === "home";
   const showCharacterPanel =
@@ -49,9 +61,6 @@ export default function SideBar() {
   const w = useRef<Window>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
     if (!w.current) {
       w.current = window;
     }
@@ -113,11 +122,57 @@ export default function SideBar() {
           },
         });
       });
+
+      w.current.lyra.onRefreshRequest(() => {
+        w.current.location.reload();
+      });
+
+      getLoginStatus();
+      getMaintenanceStatus();
     }
   }, []);
 
+  const getLoginStatus = async () => {
+    if (!w.current) return;
+    const status = await w.current.lyra.isLoged();
+    setIsLoged(status);
+    if (status) {
+      setIsLoading(false);
+      getPlayerInfo();
+    }
+  };
+
+  const getPlayerInfo = async () => {
+    if (!w.current) return;
+
+    const playerData = await w.current.lyra.getPlayerData();
+
+    if (!playerData.confirm) return;
+
+    setSkin(playerData.data);
+  };
+
+  const getMaintenanceStatus = async () => {
+    const status = await fetch("http://localhost:3001/api/config/get", {
+      method: "GET",
+    });
+
+    const parsedStatus: {
+      confirm: boolean;
+      data: {
+        maintenance: boolean;
+        maintenance_message: string;
+      };
+    } = await status.json();
+
+    if (!parsedStatus.confirm) return;
+
+    setMaintenanceStatus(parsedStatus.data);
+  };
+
   return (
     <div className="overflow-hidden relative h-screen w-screen">
+      {!isLoged && <Login />}
       <InfoModal
         content={{
           title: displayInfoModal.content.title,
@@ -128,12 +183,14 @@ export default function SideBar() {
           switch (type) {
             case "continue":
               setDisplayInfoModal({ ...displayInfoModal, open: false });
+              setIsPlaying(false);
               break;
             case "relaunche":
               w.current.lyra.relaunche_app();
               break;
             case "send":
               w.current.lyra.send_error_log();
+              setIsPlaying(false);
               break;
           }
         }}
@@ -196,8 +253,17 @@ export default function SideBar() {
             currentAnimationDelay > 0 ? `-${currentAnimationDelay}ms` : "0ms",
         }}
         onClick={() => {
-          if (w) {
+          if (w.current && !maintenanceStatus?.maintenance) {
             w.current.lyra.startGame();
+          } else if (maintenanceStatus?.maintenance) {
+            setDisplayInfoModal({
+              open: true,
+              type: "error",
+              content: {
+                title: "Maintenance en cour...",
+                desc: maintenanceStatus?.maintenance_message,
+              },
+            });
           }
         }}
       >
@@ -205,11 +271,13 @@ export default function SideBar() {
           href="#"
           className="minecraft-button"
           onClick={() => {
-            setStartAnimationMilis(0);
-            setCurrentAnimationDelay(0);
-            setTimeout(() => {
-              setIsPlaying(true);
-            }, 50);
+            if (!maintenanceStatus.maintenance) {
+              setStartAnimationMilis(0);
+              setCurrentAnimationDelay(0);
+              setTimeout(() => {
+                setIsPlaying(true);
+              }, 50);
+            }
           }}
         >
           Play
@@ -244,9 +312,9 @@ export default function SideBar() {
           <div className="w-246 min-w-246 h-full justify-self-start px-8 pb-6 flex justify-around items-center flex-row">
             <CharacterPreview
               className="rounded-xl overflow-hidden flex-1"
-              minecraftUsername={previewUsername}
-              textureSrc={previewSkinSrc}
-              nametag={previewUsername}
+              minecraftUsername={skin.name}
+              textureSrc={skin?.skin}
+              nametag={skin.name}
               variant="CLASSIC"
             />
             <div className="flex justify-center items-center flex-col h-full gap-4 w-[75%] flex-1">
@@ -258,9 +326,9 @@ export default function SideBar() {
                   OnChnage={() => {
                     console.log("");
                   }}
-                  placeholder={"test"}
+                  placeholder={"username"}
                   type={"text"}
-                  value={"royaly_games"}
+                  value={skin?.name}
                 />
               </div>
               <div className="flex justify-between items-center gap-6">
@@ -272,31 +340,39 @@ export default function SideBar() {
                     OnChnage={() => {
                       console.log("");
                     }}
-                    placeholder={"test"}
+                    placeholder={"job"}
                     type={"text"}
-                    value={"Electricien"}
+                    value={skin?.job}
                   />
                 </div>
                 <div className="flex justify-center items-start flex-col">
                   <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
                     Type :
                   </span>
-                  <PlayerType selected={1} />
+                  <PlayerType selected={skin?.type} />
                 </div>
               </div>
               <span className="font-[Minecraft] font-semibold text-xl self-start text-(--modringht-text-default) tracking-wide">
                 texture :
               </span>
-              <div className="rounded-md cursor-pointer border border-dashed border-(--modringht-border-strong) bg-(--modringht-bg-super-raised) p-6 flex justify-center items-center flex-col gap-1 w-full">
+              <div
+                onClick={() => {
+                  if (!w.current) return;
+                  w.current.lyra.openLink("http://localhost:3001/account");
+                }}
+                className="rounded-md cursor-pointer border border-dashed border-(--modringht-border-strong) bg-(--modringht-bg-super-raised) p-6 flex justify-center items-center flex-col gap-1 w-full"
+              >
                 <img
-                  src={previewSkinSrc}
+                  src={
+                    skin?.skin || "https://api.mcheads.org/skin/" + skin?.name
+                  }
                   className="h-16 w-16 rounded-md my-3"
                 />
                 <span className="text-base text-(--modringht-text-default)">
                   Click pour la changer
                 </span>
                 <span className="text-xs text-(--modringht-text-muted)">
-                  PNG (64pxx64px)
+                  PNG (64px X 64px)
                 </span>
               </div>
             </div>

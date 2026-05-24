@@ -1,4 +1,5 @@
 import { LogOutIcon, UserRoundCogIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
 import Button from "./Button";
 
 export default function AccountDisplay({
@@ -10,6 +11,14 @@ export default function AccountDisplay({
   name: string;
   mainClassName?: string;
 }) {
+  const w = useRef<Window>(null);
+
+  useEffect(() => {
+    if (!w.current) {
+      w.current = window;
+    }
+  }, []);
+
   return (
     <div className={"flex justify-between items-center " + mainClassName}>
       <div className="flex justify-center items-center gap-4">
@@ -19,8 +28,22 @@ export default function AccountDisplay({
         </p>
       </div>
       <div className="flex justify-center items-center gap-6">
-        <Button label="Gérer" icon={<UserRoundCogIcon size={16} />} />
-        <Button label="Déconnection" icon={<LogOutIcon size={16} />} />
+        <Button
+          label="Gérer"
+          onClick={() => {
+            if (!w.current) return;
+            w.current.lyra.openLink("http://localhost:3001/account");
+          }}
+          icon={<UserRoundCogIcon size={16} />}
+        />
+        <Button
+          label="Déconnection"
+          onClick={() => {
+            if (!w.current) return;
+            w.current.lyra.logout();
+          }}
+          icon={<LogOutIcon size={16} />}
+        />
       </div>
     </div>
   );

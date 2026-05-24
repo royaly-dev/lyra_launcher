@@ -4,6 +4,10 @@ export type StorageType = {
     monitorResolutions?: string;
     downloadFiles?: number;
     startup?: boolean;
-    account?: Record<string, unknown>;
+    account?: {
+      uuid: string;
+      name: string;
+      token: string;
+    };
   };
 };

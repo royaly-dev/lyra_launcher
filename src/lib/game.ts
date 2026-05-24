@@ -13,21 +13,11 @@ export async function StartGame() {
       : process.env.HOME + "/";
 
   const auth = {
-    access_token:
-      "r5b6uCjQAYuvf2PW7c6FmBpaPDsupOn3EbnX0LPqulpGMWMRbq3L4CBZwGQbi9ttZxZKrk0Z9XV5p8y6SR24yITOyYYGPx3MHQu4tggB21fDbRammiBS9cOiOzdd35WT",
-    client_token: "2e3df79f-518a-4378-a39b-5306deaad6eb",
-    uuid: "2e3df79f-518a-4378-a39b-5306deaad6eb",
-    name: "royaly",
+    access_token: settings.account.uuid,
+    client_token: settings.account.uuid,
+    uuid: settings.account.uuid,
+    name: settings.account.name,
     user_properties: "{}",
-    user_info: {
-      banned: false,
-      money: 0,
-      role: {
-        id: 2,
-        name: "Admin",
-        color: "#e10d11",
-      },
-    },
     meta: {
       online: false,
       type: "AZauth",
