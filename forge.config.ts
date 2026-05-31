@@ -10,9 +10,12 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
+import fs from "fs";
+import path from "path";
 
 const config: ForgeConfig = {
   packagerConfig: {
+    name: "lyra_launcher",
     asar: true,
     protocols: [
       {
@@ -28,6 +31,7 @@ const config: ForgeConfig = {
     new MakerRpm({}),
     new MakerDeb({
       options: {
+        maintainer: "royaly-dev",
         mimeType: ["x-scheme-handler/lyra"],
         categories: ["Game"],
         desktopTemplate: undefined,
@@ -64,6 +68,25 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  hooks: {
+    postMake: async (forgeConfig, makeResults) => {
+      for (const result of makeResults) {
+        for (const artifactPath of result.artifacts) {
+          const extension = path.extname(artifactPath);
+          const directory = path.dirname(artifactPath);
+
+          const newName = `lyra_launcher${extension}`;
+          const newPath = path.join(directory, newName);
+
+          if (fs.existsSync(artifactPath)) {
+            console.log(`Renaming ${artifactPath} to ${newPath}`);
+            fs.renameSync(artifactPath, newPath);
+          }
+        }
+      }
+      return makeResults;
+    },
+  },
 };
 
 export default config;

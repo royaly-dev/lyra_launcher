@@ -312,7 +312,7 @@ export default function SideBar() {
           <div className="w-246 min-w-246 h-full justify-self-start px-8 pb-6 flex justify-around items-center flex-row">
             <CharacterPreview
               className="rounded-xl overflow-hidden flex-1"
-              minecraftUsername={skin.name}
+              minecraftUsername={!skin?.skin ? skin.name : undefined}
               textureSrc={skin?.skin}
               nametag={skin.name}
               variant="CLASSIC"
