@@ -153,7 +153,7 @@ export default function SideBar() {
   };
 
   const getMaintenanceStatus = async () => {
-    const status = await fetch("http://localhost:3001/api/config/get", {
+    const status = await fetch("https://lyra.royaly.dev/api/config/get", {
       method: "GET",
     });
 
@@ -358,7 +358,7 @@ export default function SideBar() {
               <div
                 onClick={() => {
                   if (!w.current) return;
-                  w.current.lyra.openLink("http://localhost:3001/account");
+                  w.current.lyra.openLink("https://lyra.royaly.dev/account");
                 }}
                 className="rounded-md cursor-pointer border border-dashed border-(--modringht-border-strong) bg-(--modringht-bg-super-raised) p-6 flex justify-center items-center flex-col gap-1 w-full"
               >

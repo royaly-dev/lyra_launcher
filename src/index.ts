@@ -121,11 +121,12 @@ const createWindow = (): void => {
 
     if (parcedCall[0] === "login") {
       const currentSettings = store.get("settings");
-      const cookie = "better-auth.session_token=" + parcedCall[1];
+      const cookie =
+        "__Secure-__Secure-better-auth.session_token=" + parcedCall[1];
 
       try {
         const accountInfo = await fetch(
-          "http://localhost:3001/api/auth/get-session",
+          "https://lyra.royaly.dev/api/auth/get-session",
           {
             method: "GET",
             headers: {
@@ -134,13 +135,17 @@ const createWindow = (): void => {
             },
           },
         );
-        const playerInfo = await fetch("http://localhost:3001/api/player/get", {
-          method: "GET",
-          headers: {
-            Cookie: decodeURIComponent(cookie),
-            Origin: "lyra:/",
+
+        const playerInfo = await fetch(
+          "https://lyra.royaly.dev/api/player/get",
+          {
+            method: "GET",
+            headers: {
+              Cookie: decodeURIComponent(cookie),
+              Origin: "lyra:/",
+            },
           },
-        });
+        );
 
         const parsedAccountInfo = await accountInfo.json();
 
@@ -284,9 +289,10 @@ ipcMain.handle("send_error_log", async () => {
 
   const file = await fs.readFile(tempCrachPath);
   const settings: StorageType["settings"] = store.get("settings");
-  const cookie = "better-auth.session_token=" + settings?.account?.token;
+  const cookie =
+    "__Secure-better-auth.session_token=" + settings?.account?.token;
 
-  await fetch("http://localhost:3001/api/error", {
+  await fetch("https://lyra.royaly.dev/api/error", {
     method: "POST",
     headers: {
       Cookie: decodeURIComponent(cookie),
@@ -308,10 +314,11 @@ ipcMain.handle("isLoged", async () => {
   // TODO : check if the player is not banned and if the current session is still alive
 
   const settings: StorageType["settings"] = store.get("settings");
-  const cookie = "better-auth.session_token=" + settings?.account?.token;
+  const cookie =
+    "__Secure-better-auth.session_token=" + settings?.account?.token;
 
   const accountInfo = await fetch(
-    "http://localhost:3001/api/auth/get-session",
+    "https://lyra.royaly.dev/api/auth/get-session",
     {
       method: "GET",
       headers: {
@@ -341,9 +348,10 @@ ipcMain.handle("logout", () => {
 
 ipcMain.handle("getPlayerData", async () => {
   const settings: StorageType["settings"] = store.get("settings");
-  const cookie = "better-auth.session_token=" + settings?.account?.token;
+  const cookie =
+    "__Secure-better-auth.session_token=" + settings?.account?.token;
 
-  const playerData = await fetch("http://localhost:3001/api/player/get", {
+  const playerData = await fetch("https://lyra.royaly.dev/api/player/get", {
     method: "GET",
     headers: {
       Cookie: decodeURIComponent(cookie),

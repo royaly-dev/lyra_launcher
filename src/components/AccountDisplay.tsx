@@ -32,7 +32,7 @@ export default function AccountDisplay({
           label="Gérer"
           onClick={() => {
             if (!w.current) return;
-            w.current.lyra.openLink("http://localhost:3001/account");
+            w.current.lyra.openLink("https://lyra.royaly.dev/account");
           }}
           icon={<UserRoundCogIcon size={16} />}
         />

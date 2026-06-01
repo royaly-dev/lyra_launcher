@@ -28,7 +28,7 @@ export async function StartGame() {
   const game = new Launch();
 
   game.Launch({
-    url: "http://localhost:3001/api/file",
+    url: "https://lyra.royaly.dev/api/file",
     authenticator: auth,
     path: appdata + ".lyra",
     instance: "lyra",

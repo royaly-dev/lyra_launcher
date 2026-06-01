@@ -20,7 +20,7 @@ export function Login() {
         onClick={() => {
           if (!w.current || isLogin) return;
           setIslogin(true);
-          w.current.lyra.openLink("http://localhost:3001/launcher/login");
+          w.current.lyra.openLink("https://lyra.royaly.dev/launcher/login");
         }}
         label="Login"
         icon={<LogInIcon className="text-white!" size={16} />}
