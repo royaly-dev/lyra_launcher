@@ -121,8 +121,7 @@ const createWindow = (): void => {
 
     if (parcedCall[0] === "login") {
       const currentSettings = store.get("settings");
-      const cookie =
-        "__Secure-__Secure-better-auth.session_token=" + parcedCall[1];
+      const cookie = "__Secure-better-auth.session_token=" + parcedCall[1];
 
       try {
         const accountInfo = await fetch(
