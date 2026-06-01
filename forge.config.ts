@@ -1,13 +1,8 @@
 import type { ForgeConfig } from "@electron-forge/shared-types";
-import { MakerSquirrel } from "@electron-forge/maker-squirrel";
-import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerDeb } from "@electron-forge/maker-deb";
-import { MakerRpm } from "@electron-forge/maker-rpm";
 import { AutoUnpackNativesPlugin } from "@electron-forge/plugin-auto-unpack-natives";
 import { WebpackPlugin } from "@electron-forge/plugin-webpack";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
-
 import { mainConfig } from "./webpack.main.config";
 import { rendererConfig } from "./webpack.renderer.config";
 import fs from "fs";
@@ -16,6 +11,7 @@ import path from "path";
 const config: ForgeConfig = {
   packagerConfig: {
     name: "lyra_launcher",
+    executableName: "lyra_launcher",
     asar: true,
     protocols: [
       {
@@ -26,17 +22,35 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({
-      options: {
-        maintainer: "royaly-dev",
-        mimeType: ["x-scheme-handler/lyra"],
-        categories: ["Game"],
-        desktopTemplate: undefined,
+    {
+      name: "@electron-forge/maker-squirrel",
+      config: {
+        name: "lyra_launcher",
       },
-    }),
+    },
+    {
+      name: "@electron-forge/maker-zip",
+      platforms: ["darwin"],
+      config: {},
+    },
+    {
+      name: "@electron-forge/maker-deb",
+      config: {
+        options: {
+          maintainer: "royaly-dev",
+          mimeType: ["x-scheme-handler/lyra"],
+          categories: ["Game"],
+        },
+      },
+    },
+    {
+      name: "@electron-forge/maker-rpm",
+      config: {
+        options: {
+          name: "lyra_launcher",
+        },
+      },
+    },
   ],
   publishers: [
     {
@@ -44,7 +58,7 @@ const config: ForgeConfig = {
       config: {
         repository: {
           owner: "royaly-dev",
-          name: "savepass",
+          name: "lyra_launcher",
         },
         draft: false,
         prerelease: false,
@@ -69,8 +83,6 @@ const config: ForgeConfig = {
         ],
       },
     }),
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,
@@ -84,18 +96,19 @@ const config: ForgeConfig = {
   hooks: {
     postMake: async (forgeConfig, makeResults) => {
       for (const result of makeResults) {
-        for (const artifactPath of result.artifacts) {
+        result.artifacts = result.artifacts.map((artifactPath) => {
           const extension = path.extname(artifactPath);
           const directory = path.dirname(artifactPath);
-
           const newName = `lyra_launcher${extension}`;
           const newPath = path.join(directory, newName);
 
-          if (fs.existsSync(artifactPath)) {
+          if (fs.existsSync(artifactPath) && artifactPath !== newPath) {
             console.log(`Renaming ${artifactPath} to ${newPath}`);
             fs.renameSync(artifactPath, newPath);
+            return newPath;
           }
-        }
+          return artifactPath;
+        });
       }
       return makeResults;
     },
