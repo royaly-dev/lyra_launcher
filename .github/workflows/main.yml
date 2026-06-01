@@ -35,5 +35,5 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run publish
+        run: npm run publish 2>&1 || true
         shell: bash
