@@ -38,6 +38,19 @@ const config: ForgeConfig = {
       },
     }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "royaly-dev",
+          name: "savepass",
+        },
+        draft: false,
+        prerelease: false,
+      },
+    },
+  ],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({
