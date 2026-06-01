@@ -25,8 +25,10 @@ jobs:
         run: npm ci
         shell: bash
 
-      - name: Debug forge config
-        run: cat forge.config.ts
+      - name: Debug platform
+        run: |
+          node -e "console.log('platform:', process.platform)"
+          node -e "const { MakerDeb } = require('@electron-forge/maker-deb'); const m = new MakerDeb({}); console.log('deb platforms:', m.platforms)"
         shell: bash
 
       - name: Install RPM
