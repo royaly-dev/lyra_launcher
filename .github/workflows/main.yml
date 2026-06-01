@@ -26,6 +26,10 @@ jobs:
         run: npm ci
         shell: bash
 
+      - name: Debug forge config
+        run: cat forge.config.ts
+        shell: bash
+
       - name: Install RPM
         if: runner.os == 'Linux'
         run: |
