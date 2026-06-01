@@ -25,6 +25,24 @@ jobs:
         run: npm ci
         shell: bash
 
+      - name: Debug makers
+        run: |
+          node -e "
+          const { MakerDeb } = require('@electron-forge/maker-deb');
+          const { MakerRpm } = require('@electron-forge/maker-rpm');
+          const { MakerSquirrel } = require('@electron-forge/maker-squirrel');
+          const { MakerZIP } = require('@electron-forge/maker-zip');
+          const deb = new MakerDeb({});
+          const rpm = new MakerRpm({});
+          const sq = new MakerSquirrel({});
+          const zip = new MakerZIP({}, ['darwin']);
+          console.log('deb supported:', deb.isSupportedOnCurrentPlatform());
+          console.log('rpm supported:', rpm.isSupportedOnCurrentPlatform());
+          console.log('squirrel supported:', sq.isSupportedOnCurrentPlatform());
+          console.log('zip supported:', zip.isSupportedOnCurrentPlatform());
+          "
+        shell: bash
+
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
