@@ -25,13 +25,6 @@ jobs:
         run: npm ci
         shell: bash
 
-      - name: Debug env
-        run: |
-          env | grep -i forge
-          env | grep -i maker
-          env | grep -i target
-        shell: bash
-
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
