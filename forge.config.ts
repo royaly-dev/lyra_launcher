@@ -25,7 +25,11 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      authors: "royaly",
+      title: "Lyra Launcher",
+      name: "Lyra Launcher",
+    }),
     new MakerZIP({}, ["darwin"]),
     new MakerDeb({
       options: {

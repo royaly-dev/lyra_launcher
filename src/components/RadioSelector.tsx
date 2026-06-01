@@ -46,12 +46,12 @@ export default function RadioSelector({
           >
             <span className="flex items-center justify-between gap-4">
               <span className="flex flex-col">
-                <span className="text-xl leading-none font-medium font-[Inter] text-(--modringht-text-primary)">
+                <span className="text-xl leading-none font-medium font-inter text-(--modringht-text-primary)">
                   {option.label}
                 </span>
                 {option.description ? (
                   <span
-                    className="mt-1 text-xs font-semibold tracking-wider uppercase font-[Inter]"
+                    className="mt-1 text-xs font-semibold tracking-wider uppercase font-inter"
                     style={{ color: "var(--modringht-text-muted)" }}
                   >
                     {option.description}

@@ -95,7 +95,7 @@ export default function Settings_section() {
       </div>
 
       <div className="flex flex-col gap-4 py-3">
-        <h1 className="text-2xl! text-(--modringht-text-default) font-[Inter]">
+        <h1 className="text-2xl! text-(--modringht-text-default) font-inter">
           Résolution d'écran :
         </h1>
         <RadioSelector
@@ -109,10 +109,10 @@ export default function Settings_section() {
       </div>
 
       <div className="flex flex-col gap-4 py-4">
-        <h1 className="text-2xl! text-(--modringht-text-default) font-[Inter]">
+        <h1 className="text-2xl! text-(--modringht-text-default) font-inter">
           Gestion de la RAM :
         </h1>
-        <p className="text-base! text-(--modringht-text-default) font-[Inter]">
+        <p className="text-base! text-(--modringht-text-default) font-inter">
           Ici tu peut régler la ram que minecraft vas pouvoir prendre, il est
           recommander dans mettre au moins 6G le minimum est 4G.
         </p>
