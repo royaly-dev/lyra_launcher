@@ -1,7 +1,7 @@
 {
   "name": "lyra_launcher",
   "productName": "lyra_launcher",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Lyra launcher to play lyra",
   "main": ".webpack/main",
   "private": true,
