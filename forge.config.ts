@@ -16,6 +16,7 @@ const config: ForgeConfig = {
   packagerConfig: {
     name: "lyra_launcher",
     asar: true,
+    icon: "src/img/icon",
     protocols: [
       {
         name: "Lyra",
@@ -29,6 +30,8 @@ const config: ForgeConfig = {
       authors: "royaly",
       title: "Lyra Launcher",
       name: "Lyra Launcher",
+      setupIcon: "src/img/icon.ico",
+      iconUrl: "https://lyra.royaly.dev/favicon.ico",
     }),
     new MakerZIP({}, ["darwin"]),
     new MakerDeb({
@@ -37,6 +40,7 @@ const config: ForgeConfig = {
         mimeType: ["x-scheme-handler/lyra"],
         categories: ["Game"],
         desktopTemplate: undefined,
+        icon: "src/img/icon.png",
       },
     }),
   ],
