@@ -28,6 +28,7 @@ let tempCrachPath: string;
 import trayIconIcns from "./img/icon.icns";
 import trayIconIco from "./img/icon.ico";
 import trayIconPng from "./img/icon.png";
+import { startRPC } from "./lib/rpc";
 
 const trayIcon =
   process.platform === "darwin"
@@ -199,6 +200,7 @@ app.on("ready", async () => {
   }
 
   createWindow();
+  startRPC();
   session.defaultSession.webRequest.onHeadersReceived((detail, callback) => {
     callback({
       responseHeaders: {

@@ -11,12 +11,6 @@ const start_playing = Date.now();
 
 const rpc = new DiscordRPC.Client({ transport: "ipc" });
 
-async function test() {
-  console.log(appdata);
-}
-
-test();
-
 async function initRPC() {
   DiscordRPC.register(id);
   if (!rpc) return;
@@ -54,26 +48,28 @@ async function setplaying() {
   });
 }
 
-rpc.on("ready", async () => {
-  initRPC();
-  console.log("ready !");
-});
+async function startRPC() {
+  rpc.on("ready", async () => {
+    initRPC();
+    console.log("ready !");
+  });
 
-rpc.login({ clientId: id }).catch((err) => {
-  console.log(err);
-});
+  rpc.login({ clientId: id }).catch((err) => {
+    console.log(err);
+  });
+}
 
 async function webhookVerification(user: { name: string }, name: string) {
-  const folderPath = appdata + "\\.lyra\\instances\\" + name;
+  const folderPath = path.join(appdata, ".lyra", "instances", name);
 
   let mods;
   let pack;
   let shader;
 
   try {
-    mods = fs.readdirSync(folderPath + "\\mods");
-    pack = fs.readdirSync(folderPath + "\\resourcepacks");
-    shader = fs.readdirSync(folderPath + "\\shaderpacks");
+    mods = fs.readdirSync(path.join(folderPath, "mods"));
+    pack = fs.readdirSync(path.join(folderPath, "resourcepacks"));
+    shader = fs.readdirSync(path.join(folderPath, "shaderpacks"));
   } catch (err) {
     console.error("Could not list the directory.", err);
     return;
@@ -129,4 +125,4 @@ async function webhookVerification(user: { name: string }, name: string) {
   }).catch((e) => console.error("error : " + e));
 }
 
-export { initRPC, setiding, setplaying, webhookVerification };
+export { initRPC, setiding, setplaying, webhookVerification, startRPC };

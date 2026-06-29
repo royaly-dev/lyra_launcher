@@ -36,7 +36,10 @@ export default function SideBar() {
   const [statusText, setStatusText] = useState<{
     title: string;
     subTitle: string;
-  }>({ title: "", subTitle: "" });
+  }>({
+    title: "Verification des ressources...",
+    subTitle: "Verification des ressources du jeux...",
+  });
   const [isLoged, setIsLoged] = useState<boolean>(false);
   const [skin, setSkin] = useState<{
     uuid: string;
@@ -198,7 +201,7 @@ export default function SideBar() {
       />
       {isPlaying && (
         <div className="absolute inset-0 z-0">
-          <MyPlayer src="https://upload.royaly.dev/data/lyra_teaser_v2.mp4" />
+          <MyPlayer src="https://upload.royaly.dev/data/trailer.mp4" />
           <div className="absolute w-full bottom-0 h-28 backdrop-blur-md flex justify-center items-center flex-row border-t border-white/10">
             <div className="flex justify-center items-center flex-col">
               <p className="font-[Minecraft] text-2xl text-white">

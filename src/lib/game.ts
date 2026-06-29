@@ -2,6 +2,7 @@ import { StorageType } from "@/types/Storage.types";
 import { Launch } from "minecraft-java-core";
 import { getStorage } from "./storage";
 import { ipcMain } from "electron";
+import { setiding, setplaying, webhookVerification } from "./rpc";
 
 export async function StartGame() {
   let isDownloadCraching = 0;
@@ -26,6 +27,9 @@ export async function StartGame() {
   };
 
   const game = new Launch();
+
+  webhookVerification({ name: settings.account.name }, "lyra");
+  setplaying();
 
   game.Launch({
     url: "https://lyra.royaly.dev/api/file",
@@ -138,9 +142,11 @@ export async function StartGame() {
   game.on("close", (code) => {
     console.log(code);
     ipcMain.emit("openWindow");
+    setiding();
   });
 
   game.on("error", (error) => {
     console.log("error : " + error);
+    setiding();
   });
 }
