@@ -39,6 +39,15 @@ export async function StartGame() {
     version: "1.20.1",
     detached: false,
     downloadFileMultiple: settings.downloadFiles,
+    verify: true,
+    ignored: [
+      "logs",
+      "options.txt",
+      "optionsof.txt",
+      "xaero",
+      "screenshots",
+      "schematics",
+    ],
     loader: {
       enable: true,
       type: "fabric",
