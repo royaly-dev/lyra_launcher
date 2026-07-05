@@ -216,7 +216,7 @@ export default function SideBar() {
       )}
       {!isPlaying && (
         <iframe
-          src="https://jungle.mystrator.com/s/demo/#overworld:175:51:36:160:0:0:0:1:flat"
+          src="https://jungle.mystrator.com/s/f7a9a4c8-0fd8-40c9-b235-eb46ddd93b11/#overworld:-5645:0:301:650:0:0:0:1:flat"
           className="absolute inset-0 z-10 w-screen h-screen scale-[1.15] pointer-events-none select-none"
         />
       )}

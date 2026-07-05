@@ -87,25 +87,6 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
-  hooks: {
-    postMake: async (forgeConfig, makeResults) => {
-      for (const result of makeResults) {
-        for (const artifactPath of result.artifacts) {
-          const extension = path.extname(artifactPath);
-          const directory = path.dirname(artifactPath);
-
-          const newName = `lyra_launcher${extension}`;
-          const newPath = path.join(directory, newName);
-
-          if (fs.existsSync(artifactPath)) {
-            console.log(`Renaming ${artifactPath} to ${newPath}`);
-            fs.renameSync(artifactPath, newPath);
-          }
-        }
-      }
-      return makeResults;
-    },
-  },
 };
 
 export default config;
